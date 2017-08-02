@@ -8,8 +8,24 @@ class Notification(models.Model):
 
     def __unicode__(self):
         return self.header
+    
+    def create_or_update_schedule(self,schedules):
+        for schedule in schedules:
+            if not schedule.get('id',None):
+                self.add_schedule(schedule)
+            else: 
+                self.update_schedule(schedule)
+            return True
 
+    def add_schedule(self,schedule):
+        schedule['task_id']=""
+        schedule['notification']=self
+        model = Schedule(**schedule)
+        model.save()
 
+    def update_schedule(self,schedule):
+        pass
+        
 class Schedule(models.Model):
     """
     Model to hold the state of a scheduled notification.Each notification
